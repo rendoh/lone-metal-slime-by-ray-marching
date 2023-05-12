@@ -3539,12 +3539,12 @@ Intersect sdf(vec3 p) {
   mouthPos = rotate(mouthPos, vec3(1., 0., 0.), PI * 0.5);
   float mouth = sdCappedTorus(mouthPos, vec2(sin(s), cos(s)), 0.65, 0.05);
   float final = smax(body, -mouth, .05);
-  for (float i = 0.; i < 6.; i++) {
+  for (float i = 0.; i < 7.; i++) {
     float rand = rand(vec2(i, 0));
     float r = rand * 30.;
-    float progress = fract(uTime * 0.0002 * (rand + 1.) + rand);
+    float progress = fract(uTime * 0.00025 * (rand + 1.) + rand);
     vec3 pos = vec3(sin(r), 0., cos(r)) * 1.6;
-    float bubbleToTop = sdSphere(p + pos + vec3(0., -6., 0.) * progress, .1 + rand * .1);
+    float bubbleToTop = sdSphere(p + pos + vec3(0., -5., 0.) * progress, (.5 + rand) * .15 * (1.0 - smoothstep(0.3, 1.0, progress)));
     final = smin(final, bubbleToTop, .5); 
   }
 
