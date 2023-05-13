@@ -138,7 +138,8 @@ void main() {
   cylinderRadiusNoise = cnoise(p * 3.2 + uTime * .0005) * 0.1;
   headPos = vec3(0.25 * sin(uTime * 0.0012), offsetY, 0.15 * cos(uTime * 0.003));
   bodyScale = offsetY * .6;
-  pupilPos = vec3(m.x * -0.05, m.y * -0.05 - .015, -.05);
+  vec2 nm = length(m) > 1. ? normalize(m) : m;
+  pupilPos = vec3(nm.x * -0.05, nm.y * -0.05 - .015, -.05);
   float tmp = 0.;
   float dist = 0.;
   vec3 color;
