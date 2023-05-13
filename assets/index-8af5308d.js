@@ -3459,7 +3459,7 @@ const vec3 cameraUp = vec3(0., 1., 0.);
 const vec3 cameraSide = cross(cameraDir, cameraUp);
 
 vec3 bgColor = vec3(0.8);
-vec3 bodyColor = vec3(.25);
+vec3 bodyColor = vec3(.35);
 vec3 eyeColor = vec3(1.);
 vec3 pupilColor = vec3(0.);
 
@@ -3531,28 +3531,28 @@ struct Intersect {
 
 Intersect sdf(vec3 p) {
   float sphere = sdCutSphere(p + vec3(0., 0.4, 0.) + headPos, 1.3, 0.4);
-  float s = 1.;
+  float s = .6;
 
   float cylinder = sdRoundedCylinder(p, 1.15 + bodyScale + cylinderRadiusNoise, 0.04, .0);
   float body = smin(sphere, cylinder, 0.6);
-  vec3 mouthPos = rotate(p + vec3(0., -0.35, -0.47) + headPos, vec3(0, 0, -1.), PI);
-  mouthPos = rotate(mouthPos, vec3(1., 0., 0.), PI * 0.5);
-  float mouth = sdCappedTorus(mouthPos, vec2(sin(s), cos(s)), 0.65, 0.05);
+  vec3 mouthPos = rotate(p + vec3(0., -0.61, -0.27) + headPos, vec3(0, 0, -1.), PI);
+  mouthPos = rotate(mouthPos, vec3(1., 0., 0.), PI * 0.42);
+  float mouth = sdCappedTorus(mouthPos, vec2(sin(s), cos(s)), .8, .04);
   float final = smax(body, -mouth, .05);
   for (float i = 0.; i < 7.; i++) {
     float rand = rand(vec2(i, 0));
     float r = rand * 30.;
-    float progress = fract(uTime * 0.00025 * (rand + 1.) + rand);
-    vec3 pos = vec3(sin(r), 0., cos(r)) * 1.6;
-    float bubbleToTop = sdSphere(p + pos + vec3(0., -5., 0.) * progress, (.5 + rand) * .15 * (1.0 - smoothstep(0.3, 1.0, progress)));
-    final = smin(final, bubbleToTop, .5); 
+    float progress = fract(uTime * 0.00035 * (rand + 1.) + rand);
+    vec3 pos = vec3(sin(r), .05, cos(r)) * 1.6;
+    float bubbleToTop = sdSphere(p + pos + vec3(0., -5., 0.) * pow(progress, 1.75), (.5 + rand) * .15 * (1.0 - smoothstep(.7, 1., progress)));
+    final = smin(final, bubbleToTop, .2);
   }
 
-  float leftEye = sdRoundedCylinder(rotate(p + vec3(-0.22, -0.625, -0.9) + headPos, vec3(1., 0., 0.), PI / 3.8), 0.06, 0.0005, 0.0005);
-  float rightEye = sdRoundedCylinder(rotate(p + vec3(0.22, -0.625, -0.9) + headPos, vec3(1., 0., 0.), PI / 3.8), 0.06, 0.0005, 0.0005);
+  float leftEye = sdRoundedCylinder(rotate(p + vec3(-0.21, -0.67, -0.9) + headPos, vec3(1., 0., 0.), PI / 3.8), 0.06, 0.0005, 0.0005);
+  float rightEye = sdRoundedCylinder(rotate(p + vec3(0.21, -0.67, -0.9) + headPos, vec3(1., 0., 0.), PI / 3.8), 0.06, 0.0005, 0.0005);
 
-  float leftPupil = sdRoundedCylinder(rotate(p + pupilPos + vec3(-0.22, -0.625, -0.9) + headPos, vec3(1., 0., 0.), PI / 3.8), 0.03, 0.001, 0.001);
-  float rightPupil = sdRoundedCylinder(rotate(p + pupilPos + vec3(0.22, -0.625, -0.9) + headPos, vec3(1., 0., 0.), PI / 3.8), 0.03, 0.001, 0.001);
+  float leftPupil = sdRoundedCylinder(rotate(p + pupilPos + vec3(-0.21, -0.67, -0.9) + headPos, vec3(1., 0., 0.), PI / 3.8), 0.03, 0.001, 0.001);
+  float rightPupil = sdRoundedCylinder(rotate(p + pupilPos + vec3(0.21, -0.67, -0.9) + headPos, vec3(1., 0., 0.), PI / 3.8), 0.03, 0.001, 0.001);
 
   final = min(rightPupil, min(leftPupil, min(rightEye, min(leftEye, final))));
 
@@ -3560,7 +3560,7 @@ Intersect sdf(vec3 p) {
   i.dist = final;
   i.color = (min(leftEye, rightEye) <= final) ? eyeColor : bodyColor;
   i.color = (min(leftPupil, rightPupil) <= final) ? pupilColor : i.color;
-  i.color = mouth - .02 <= final ? pupilColor : i.color; 
+  i.color = mouth - .03 <= final ? pupilColor : i.color; 
   return i;
 }
 
