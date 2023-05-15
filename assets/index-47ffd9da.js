@@ -3539,10 +3539,10 @@ Intersect sdf(vec3 p) {
   mouthPos = rotate(mouthPos, vec3(1., 0., 0.), PI * 0.42);
   float mouth = sdCappedTorus(mouthPos, vec2(sin(s), cos(s)), .8, .04);
   float final = smax(body, -mouth, .05);
-  for (float i = 0.; i < 7.; i++) {
-    float rand = rand(vec2(i * 10., 0));
+  for (float i = 0.; i < 6.; i++) {
+    float rand = rand(vec2(i, 0));
     float r = rand * 30. + uTime * 0.0003 * (mod(i, 2.) - .5);
-    float progress = fract(uTime * 0.0004 * mix(0.7, 1.3, rand) + i * (.4 + rand));
+    float progress = fract(uTime * 0.0004 * mix(0.7, 1.3, rand) + rand);
     vec3 pos = vec3(sin(r), 0., cos(r)) * 1.65 * mix(0.8, 1.2, rand) + vec3(0., .05, 0.);
     float bubbleToTop = sdSphere(p + pos + vec3(0., -5., 0.) * pow(progress, 1.75), (.5 + rand) * .15 * (1.0 - smoothstep(.7, 1., progress)));
     final = smin(final, bubbleToTop, .2);
@@ -3592,7 +3592,7 @@ void main() {
   float tmp = 0.;
   float dist = 0.;
   vec3 color;
-  for(int i = 0; i < 60; i++){
+  for(int i = 0; i < 64; i++){
     rayPos = cameraPos + tmp * ray;
     Intersect result = sdf(rayPos);
     dist = result.dist;
