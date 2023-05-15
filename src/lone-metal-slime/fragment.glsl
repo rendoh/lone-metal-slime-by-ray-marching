@@ -143,16 +143,16 @@ void main() {
   float tmp = 0.;
   float dist = 0.;
   vec3 color;
-  for(int i = 0; i < 100; i++){
+  for(int i = 0; i < 60; i++){
     rayPos = cameraPos + tmp * ray;
     Intersect result = sdf(rayPos);
     dist = result.dist;
     color = result.color;
-    if (dist < 0.0001 || tmp > 6.9) break;
+    if (dist < 0.003 || tmp > 8.) break;
     tmp += dist;
   }
 
-  if (dist < 0.0001) {
+  if (dist < 0.5) {
     vec3 normal = getNormal(rayPos);
     float diffuse = clamp(dot(normal, lightDir), 0., 1.);
     float specular = pow(diffuse, 38.);
