@@ -2,6 +2,8 @@
 uniform float uTime;
 uniform vec2 uMouse;
 uniform vec2 uResolution;
+uniform float uBounce;
+uniform float uMouthClosedness;
 
 const float PI = 3.14159265;
 const vec3 cameraPos = vec3(0., 1.5, 4.6);
@@ -88,7 +90,7 @@ Intersect sdf(vec3 p) {
   float body = smin(sphere, cylinder, 0.6);
   vec3 mouthPos = rotate(p + vec3(0., -0.7, -0.42) + headPos, vec3(0, 0, -1.), PI);
   mouthPos = rotate(mouthPos, vec3(1., 0., 0.), PI * 0.42);
-  float mouth = sdCappedTorus(mouthPos, vec2(sin(s), cos(s)), .8, .04);
+  float mouth = sdCappedTorus(mouthPos, vec2(sin(s), cos(s)), .8, .04 - 0.4 * uMouthClosedness);
   float final = smax(body, -mouth, .05);
   for (float i = 0.; i < 6.; i++) {
     float rand = rand(vec2(i, 0));
@@ -136,7 +138,7 @@ void main() {
   vec3 rayPos = cameraPos;
   float offsetY = 0.11 * sin(uTime * 0.002);
   cylinderRadiusNoise = cnoise(p * 3.2 + uTime * .0005) * 0.1;
-  headPos = vec3(0.25 * sin(uTime * 0.0012), offsetY, 0.15 * cos(uTime * 0.003));
+  headPos = vec3(0.25 * sin(uTime * 0.0012), offsetY + uBounce, 0.15 * cos(uTime * 0.003));
   bodyScale = offsetY * .6;
   vec2 nm = length(m) > 1. ? normalize(m) : m;
   pupilPos = vec3(nm.x * -0.05, nm.y * -0.05 - .015, -.05);

@@ -24,6 +24,7 @@
   "dependencies": {
     "the-new-css-reset": "^1.8.4",
     "three": "^0.151.3",
+    "tone": "^14.7.77",
     "typescript-event-target": "^1.0.4"
   }
 }

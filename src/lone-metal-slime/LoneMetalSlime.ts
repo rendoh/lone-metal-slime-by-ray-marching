@@ -28,10 +28,20 @@ window.addEventListener(
   },
 );
 
-export class LoneMetalSlime {
+function lerp(x: number, y: number, p: number) {
+  return x + (y - x) * p;
+}
+
+function beta(p: number, delta: number) {
+  return 1 - Math.pow(1 - p, 60 * (delta / 1000));
+}
+
+class LoneMetalSlime {
   public readonly mesh: THREE.Mesh;
   private material: THREE.ShaderMaterial;
   private abortController = new AbortController();
+  private bounceStrength = 0;
+  private mouthClosedness = 0;
   constructor() {
     this.material = new THREE.ShaderMaterial({
       vertexShader,
@@ -40,6 +50,8 @@ export class LoneMetalSlime {
         uTime: { value: clock.elapsed },
         uMouse: { value: mouse },
         uResolution: { value: resolution },
+        uBounce: { value: 0 },
+        uMouthClosedness: { value: 0 },
       },
     });
     this.mesh = new THREE.Mesh(geometry, this.material);
@@ -57,6 +69,32 @@ export class LoneMetalSlime {
 
   public update() {
     this.material.uniforms.uTime.value = clock.elapsed;
+
+    this.bounceStrength = lerp(this.bounceStrength, 0, beta(0.2, clock.delta));
+    this.material.uniforms.uBounce.value = lerp(
+      this.material.uniforms.uBounce.value,
+      this.bounceStrength,
+      beta(0.3, clock.delta),
+    );
+
+    this.mouthClosedness = lerp(
+      this.mouthClosedness,
+      0,
+      beta(0.3, clock.delta),
+    );
+    this.material.uniforms.uMouthClosedness.value = lerp(
+      this.material.uniforms.uMouthClosedness.value,
+      this.mouthClosedness,
+      beta(0.8, clock.delta),
+    );
+  }
+
+  public bounce() {
+    this.bounceStrength = 0.225;
+  }
+
+  public openMouth() {
+    this.mouthClosedness = 0.4;
   }
 
   public dispose() {
@@ -64,3 +102,5 @@ export class LoneMetalSlime {
     this.abortController.abort();
   }
 }
+
+export const loneMetalSlime = new LoneMetalSlime();

@@ -1,0 +1,42 @@
+* {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-touch-callout: none;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+button {
+  appearance: none;
+  background: #333;
+  color: #fff;
+  font-size: 20px;
+  padding: 4px 20px;
+  border-radius: 100vmax;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #000;
+}
+
+.ui {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+@media (orientation: portrait) {
+  .ui {
+    top: auto;
+    bottom: 32px;
+    right: 0;
+    left: 0;
+    display: block;
+    margin: auto;
+    width: fit-content;
+  }
+}
